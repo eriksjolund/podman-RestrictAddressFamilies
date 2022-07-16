@@ -8,7 +8,8 @@ Requirements:
 When using Podman in a systemd service, the __systemd__ directive
 [__RestrictAddressFamilies__](https://www.freedesktop.org/software/systemd/man/systemd.exec.html#RestrictAddressFamilies=)
 can be used to restrict Podman's access to sockets. The restriction only concerns the use of the system call __socket()__,
-which means that socket-activated sockets are unaffected by the directive.
+which means that [socket-activated sockets](https://github.com/containers/podman/blob/main/docs/tutorials/socket_activation.md#socket-activation-of-containers)
+are unaffected by the directive.
 
 Containers that only need internet access via socket-activated sockets can still be run by Podman when
 systemd is configured to restrict Podman's ability to use the system call `socket()` to only allow the AF_INET and AF_INET6
@@ -18,7 +19,7 @@ image needs to be present beforehand.
 ## Example: restrict a socket-activated echo server
 
 Let's see how we could use __RestrictAddressFamilies__ for [socket-activate-echo](https://github.com/eriksjolund/socket-activate-echo/pkgs/container/socket-activate-echo),
-a simple echo server container that supports socket activation. See also the [Podman socket activation tutorial](socket_activation.md) for an introduction.
+a simple echo server container that supports socket activation.
 
 If the `--pull=never` option is added to `podman run`, the echo server container will continue to work even with
 the very restricted setting
