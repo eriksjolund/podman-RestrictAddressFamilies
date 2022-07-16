@@ -185,7 +185,7 @@ systemd has marked the service and the socket as being in the __failed__ unit st
 ```
 $ systemctl --user is-failed restricted-echo.service
 failed
-$  systemctl --user is-failed restricted-echo.socket
+$ systemctl --user is-failed restricted-echo.socket
 failed
 ```
 
