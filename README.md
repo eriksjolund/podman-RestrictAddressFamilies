@@ -1,4 +1,4 @@
-# Restrict Podman with systemd directive _RestrictAddressFamilies_
+# Restrict Podman with the systemd directive _RestrictAddressFamilies_
 
 Requirements:
 * podman >= 3.4.0
