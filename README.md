@@ -1,7 +1,7 @@
 # Restrict Podman with the systemd directive _RestrictAddressFamilies_
 
-A demo of how to improve security by blocking general internet access for Podman, conmon and the OCI runtime
-while the container still serves the internet via systemd socket activation.
+A demo of how to block general internet access for Podman and its helper programs (e.g. conmon and the OCI runtime)
+while still letting the container serve the internet via systemd socket activation.
 
 Requirements:
 * podman >= 3.4.0
