@@ -210,13 +210,14 @@ $ systemctl --user start restricted-echo.socket
 ## The need for a separate service for creating the user namespace
 
 Let us consider the situaition when systemd starts the systemd user services for
-a user directly after a reboot.  If lingering is enabled for the user and the user is not logged in,
-the first started Podman systemd user service will notice that the Podman user namespace is missing
-and will thus try to create it. This normally succeeds, but when RestrictAddressFamilies is used
-together with rootless Podman it fails.
+a user directly after a reboot. If lingering has been enabled for the user
+(`loginctl enable-linger <username>`) and the user is not logged in, the first
+started Podman systemd user service will notice that the Podman user namespace is missing
+and will thus try to create it. This normally succeeds, but when RestrictAddressFamilies
+is used together with rootless Podman it fails.
 
 The reason is that using RestrictAddressFamilies in an unprivileged systemd user service
- implies [`NoNewPrivileges=yes`](https://www.freedesktop.org/software/systemd/man/systemd.exec.html#NoNewPrivileges=),
+implies [`NoNewPrivileges=yes`](https://www.freedesktop.org/software/systemd/man/systemd.exec.html#NoNewPrivileges=),
 which prevents __/usr/bin/newuidmap__ and __/usr/bin/newgidmap__ from running with elevated privileges.
 Podman executes __newuidmap__ and __newgidmap__  to set up the user namespace. Both executables normally
 run with elevated privileges, as they need to perform operations not available to an unprivileged user.
