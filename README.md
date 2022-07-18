@@ -142,10 +142,10 @@ works fine because Podman is configured to not pull the container image.
 Now modify the service unit so that Podman always pulls the container image
 
 ```
-$ grep -- --pull= .config/systemd/user/restricted-echo.service
+$ grep -- --pull= ~/.config/systemd/user/restricted-echo.service
 	--pull=never ghcr.io/eriksjolund/socket-activate-echo
-$ sed -i s/pull=never/pull=always/ .config/systemd/user/restricted-echo.service
-$ grep -- --pull= .config/systemd/user/restricted-echo.service
+$ sed -i s/pull=never/pull=always/ ~/.config/systemd/user/restricted-echo.service
+$ grep -- --pull= ~/.config/systemd/user/restricted-echo.service
 	--pull=always ghcr.io/eriksjolund/socket-activate-echo
 ```
 
@@ -200,7 +200,7 @@ $
 Revert the change and use __--pull=never__ instead
 
 ```
-$ sed -i s/pull=always/pull=never/ .config/systemd/user/restricted-echo.service
+$ sed -i s/pull=always/pull=never/ ~/.config/systemd/user/restricted-echo.service
 $ systemctl --user daemon-reload
 $ systemctl --user reset-failed restricted-echo.service
 $ systemctl --user reset-failed restricted-echo.socket
