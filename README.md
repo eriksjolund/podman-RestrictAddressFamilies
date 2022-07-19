@@ -149,7 +149,7 @@ $ grep -- --pull= ~/.config/systemd/user/restricted-echo.service
 	--pull=always ghcr.io/eriksjolund/socket-activate-echo
 ```
 
-After editing the unit file, systemd needs to reload it's configuration
+After editing the unit file, systemd needs to reload its configuration
 
 ```
 $ systemctl --user daemon-reload
