@@ -15,7 +15,7 @@ which means that [socket-activated sockets](https://github.com/containers/podman
 are unaffected by the directive.
 
 Containers that only need internet access via socket-activated sockets can still be run by Podman when
-systemd is configured to restrict Podman's ability to use the system call `socket()` to only allow the AF_INET and AF_INET6
+systemd is configured to restrict Podman's ability to use the system call `socket()` for the AF_INET and AF_INET6
 socket families. Of course, Podman would then be blocked from pulling down any container images so the container
 image needs to be present beforehand.
 
