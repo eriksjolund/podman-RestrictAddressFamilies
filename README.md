@@ -262,6 +262,11 @@ The echo server works as expected even after a reboot!
 The systemd directive _RestrictAddressFamilies_ provides a way to restrict network access for Podman
 and its helper programs while a socket-activated echo server container still can serve the internet.
 
+The use case for this could be to run a socket-activated web server container in such a way that
+Podman and its helper programs run with less privileges. In case they would be compromised due to
+a security vulnerabilitiy, the intruder would gain less privileges and therefore have less
+possibilities to use the compromise as a starting point for attacks on other PCs.
+
 Note, using the systemd directive _RestrictAddressFamilies_ to restrict Podman is probably not a
 supported Podman use case as it's not mentioned in the Podman documentation. In any case, it's
 interesting to discover new ways of how to use Podman.
