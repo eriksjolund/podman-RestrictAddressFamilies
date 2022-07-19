@@ -1,7 +1,8 @@
-# Restrict Podman with the systemd directive _RestrictAddressFamilies_
+Title: "_Restricting Podman with the systemd directive _RestrictAddressFamilies_"
 
-A demo of how to block general internet access for Podman and its helper programs (e.g. conmon and the OCI runtime)
-while still letting the container serve the internet via systemd socket activation.
+Subtitle: "_Learn how to restrict network access for Podman_"
+
+The previous blog post _Use socket activation with Podman to get improved security_ demonstrated that a socket-activated container can use the activated socket to serve the internet even when the network is disabled (i.e., when the option __--network=none__ is given to `podman run`). This blog post takes the approach one step further by also restricting the internet access for Podman and its helper programs (e.g. conmon and the OCI runtime).
 
 Requirements:
 * podman >= 3.4.0
@@ -255,3 +256,15 @@ $
 ```
 
 The echo server works as expected even after a reboot!
+
+### Wrap up
+
+The systemd directive _RestrictAddressFamilies_ provides a way to restrict network access for Podman
+and its helper programs while a socket-activated echo server container still can serve the internet.
+
+Note, using the systemd directive _RestrictAddressFamilies_ to restrict Podman is probably not a
+supported Podman use case as it's not mentioned in the Podman documentation. In any case, it's
+interesting to discover new ways of how to use Podman.
+
+The [socket activation tutorial](https://github.com/containers/podman/blob/main/docs/tutorials/socket_activation.md) provides
+more information about socket activation support in Podman.
