@@ -267,8 +267,7 @@ a security vulnerabilitiy, the intruder would gain less privileges and therefore
 possibilities to use the compromise as a starting point for attacks on other PCs.
 
 Note, using the systemd directive _RestrictAddressFamilies_ to restrict Podman is probably not a
-supported Podman use case as it's not mentioned in the Podman documentation. In any case, it's
-interesting to discover new ways of how to use Podman.
+supported Podman use case as it's not mentioned in the Podman documentation.
 
 The [socket activation tutorial](https://github.com/containers/podman/blob/main/docs/tutorials/socket_activation.md) provides
 more information about socket activation support in Podman.
