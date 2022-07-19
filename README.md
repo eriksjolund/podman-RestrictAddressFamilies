@@ -174,9 +174,9 @@ __journalctl__ shows this error message
 
 ```
 $ journalctl --user -xe -u restricted-echo.service | grep -A2 "Trying to pull" | tail -3
-May 26 10:09:54 asus podman[28272]: Trying to pull ghcr.io/eriksjolund/socket-activate-echo:latest...
-May 26 10:09:54 asus podman[28272]: Error: initializing source docker://ghcr.io/eriksjolund/socket-activate-echo:latest: pinging container registry ghcr.io: Get "https://ghcr.io/v2/": dial tcp 140.82.121.34:443: socket: address family not supported by protocol
-May 26 10:09:54 asus systemd[10686]: test.service: Main process exited, code=exited, status=125/n/a
+Jul 16 08:26:10 asus podman[28272]: Trying to pull ghcr.io/eriksjolund/socket-activate-echo:latest...
+Jul 16 08:26:10 asus podman[28272]: Error: initializing source docker://ghcr.io/eriksjolund/socket-activate-echo:latest: pinging container registry ghcr.io: Get "https://ghcr.io/v2/": dial tcp 140.82.121.34:443: socket: address family not supported by protocol
+Jul 16 08:26:10 asus systemd[10686]: test.service: Main process exited, code=exited, status=125/n/a
 $
 ```
 
