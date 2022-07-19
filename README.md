@@ -1,4 +1,4 @@
-Title: "_Restricting Podman with the systemd directive _RestrictAddressFamilies_"
+Title: "_Restricting Podman with the systemd directive RestrictAddressFamilies_"
 
 Subtitle: "_Learn how to restrict network access for Podman_"
 
