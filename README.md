@@ -189,14 +189,6 @@ $ systemctl --user is-failed restricted-echo.socket
 failed
 ```
 
-systemd therefore refuses further connections
-
-```
-$ echo hello | socat - tcp4:127.0.0.1:9000
-2022/07/16 08:27:56 socat[2929] E connect(5, AF=2 127.0.0.1:9000, 16): Connection refused
-$ 
-```
-
 Revert the change and use __--pull=never__ instead
 
 ```
