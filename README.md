@@ -1,8 +1,10 @@
+
+
 Title: "_Restricting Podman with the systemd directive RestrictAddressFamilies_"
 
 Subtitle: "_Learn how to restrict network access for Podman_"
 
-The previous blog post _Use socket activation with Podman to get improved security_ demonstrated that a socket-activated container can use the activated socket to serve the internet even when the network is disabled (i.e., when the option __--network=none__ is given to `podman run`). This blog post takes the approach one step further by also restricting the internet access for Podman and its helper programs (e.g. conmon and the OCI runtime).
+The previous blog post _Use socket activation with Podman to get improved security_ demonstrated that a socket-activated container can use the activated socket to serve the internet even when the network is disabled (i.e., when the option __--network=none__ is given to `podman run`). This blog post takes the approach one step further by also restricting the internet access for Podman and its helper programs (e.g., conmon and the OCI runtime).
 
 Requirements:
 * podman >= 3.4.0
@@ -37,9 +39,6 @@ sockets.
 
 In case there would be a security vulnerability in Podman, conmon or the OCI runtime, this configuration limits
 the possibilities an intruder has to launch attacks on other PCs on the network.
-
-Let's try out [socket-activate-echo](https://github.com/eriksjolund/socket-activate-echo/pkgs/container/socket-activate-echo),
-a simple echo server container that supports socket activation.
 
 ### Create the systemd unit files
 
@@ -85,22 +84,22 @@ WantedBy=default.target
 
 Add the two lines
 ```
-After=podman-usernamespace.service
-BindTo=podman-usernamespace.service
+After=podman-pause-process.service
+BindTo=podman-pause-process.service
 ```
 under the line `[Unit]` with the program __sed__ (or just use an editor)
 
 ```
 $ sed -i '/\[Unit\]/a \
-After=podman-usernamespace.service\
-BindTo=podman-usernamespace.service' ~/.config/systemd/user/restricted-echo.service
+After=podman-pause-process.service\
+BindTo=podman-pause-process.service' ~/.config/systemd/user/restricted-echo.service
 ```
 
-Create the file _~/.config/systemd/user/podman-usernamespace.service_ with the contents
+Create the file _~/.config/systemd/user/podman-pause-process.service_ with the contents
 
 ```
 [Unit]
-Description=podman-usernamespace.service
+Description=podman-pause-process.service
 
 [Service]
 Type=oneshot
@@ -200,21 +199,26 @@ $ systemctl --user reset-failed restricted-echo.socket
 $ systemctl --user start restricted-echo.socket
 ```
 
-## The need for a separate service for creating the user namespace
+## The need for a separate service for creating the Podman pause process
 
-Let us consider the situaition when systemd starts the systemd user services for
-a user directly after a reboot. If lingering has been enabled for the user
+Rootless Podman uses a pause process for keeping the unprivileged
+namespaces alive. When running a command such as `podman run`,
+Podman will first create the Podman pause process if it's missing. This is the case for
+rootless Podman. When running as root there is no need for a Podman pause process.
+
+Let's consider the situaition when systemd starts the systemd user services for
+an unprivileged user directly after a reboot. If lingering has been enabled for the user
 (`loginctl enable-linger <username>`) and the user is not logged in, the first
-started Podman systemd user service will notice that the Podman user namespace is missing
+started Podman systemd user service will notice that the Podman pause process is missing
 and will thus try to create it. This normally succeeds, but when RestrictAddressFamilies
-is used together with rootless Podman it fails.
+is used together with rootless Podman, creating the Podman pause process fails.
 
 The reason is that using RestrictAddressFamilies in an unprivileged systemd user service
 implies [`NoNewPrivileges=yes`](https://www.freedesktop.org/software/systemd/man/systemd.exec.html#NoNewPrivileges=),
 which prevents __/usr/bin/newuidmap__ and __/usr/bin/newgidmap__ from running with elevated privileges.
-Podman executes __newuidmap__ and __newgidmap__  to set up the user namespace. Both executables normally
-run with elevated privileges, as they need to perform operations not available to an unprivileged user.
-These capabalities are
+Rootless Podman needs to execute __newuidmap__ and __newgidmap__  when setting up the user namespace. Both executables normally
+run with elevated privileges as they perform operations not available to an unprivileged user.
+The extra capabilities are
 
 ```
 $ getcap /usr/bin/newuidmap
@@ -224,26 +228,27 @@ $ getcap /usr/bin/newgidmap
 $
 ```
 
-Setting up the user namespace only needs to be done once because the created user namespace will be
-reused for all other invocations of Podman. Services using `RestrictAddressFamilies` or `NoNewPrivileges=yes` can
-be made to work by configuring them to start after a systemd user service that is responsible for setting
-up the user namespace.
+Services using `RestrictAddressFamilies` or `NoNewPrivileges=yes` can
+be made to work by configuring them to start after a systemd user service that is responsible for
+creating the Podman pause process.
 
-For instance, the unit _echo-restrict.service_ depends on _podman-usernamespace.service_:
+For instance, the unit _echo-restrict.service_ depends on _podman-pause-process.service_:
+
+```           paus-process
+$ grep podman-pause-process.service ~/.config/systemd/user/echo-restrict.service
+After=podman-pause-process.service
+BindTo=podman-pause-process.service
+```
+
+The service _podman-pause-process.service_ is a `Type=oneshot` service that executes `podman unshare /bin/true`. That
+command is normally used for other things, but a side effect of the command is that it creates the Podman pause
+process if it's missing.
+
+Enable the socket units and reboot
 
 ```
-$ grep podman-usernamespace.service ~/.config/systemd/user/echo-restrict.service
-After=podman-usernamespace.service
-BindTo=podman-usernamespace.service
-```
-
-The service _podman-usernamespace.service_ is a `Type=oneshot` service that executes `podman unshare /bin/true`. That
-command is normally used for other things, but a side effect of the command is that it sets up the user namespace.
-
-Enable the socket unit and reboot
-
-```
-$ systemctl --user enable restricted-echo.socket
+$ systemctl --user --quiet enable restricted-echo.socket
+$ systemctl --user --quiet enable podman-pause-process.service
 $ sudo reboot
 ```
 
@@ -260,14 +265,15 @@ The echo server works as expected even after a reboot!
 ### Wrap up
 
 The systemd directive _RestrictAddressFamilies_ provides a way to restrict network access for Podman
-and its helper programs while a socket-activated echo server container still can serve the internet.
-The use case for this could be to run a socket-activated web server container in such a way that
-Podman and its helper programs run with less privileges. In case they would be compromised due to
+and its helper programs while a socket-activated container still can serve the internet.
+
+This could, for instance, improve security for a machine that is running a socket-activated web server container.
+In case Podman, conmon or the OCI runtime would be compromised due to
 a security vulnerabilitiy, the intruder would gain less privileges and therefore have less
 possibilities to use the compromise as a starting point for attacks on other PCs.
 
-Note, using the systemd directive _RestrictAddressFamilies_ to restrict Podman is probably not a
-supported Podman use case as it's not mentioned in the Podman documentation.
+Note, using the systemd directive _RestrictAddressFamilies_ to restrict Podman is an advanced use of Podman.
+The method is not mentioned in the [Podman documentation](https://docs.podman.io/en/latest/) and might not be officially supported.
 
 The [socket activation tutorial](https://github.com/containers/podman/blob/main/docs/tutorials/socket_activation.md) provides
 more information about socket activation support in Podman.
