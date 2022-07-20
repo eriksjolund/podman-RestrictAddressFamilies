@@ -247,8 +247,8 @@ process if it's missing.
 Enable the socket units and reboot
 
 ```
-$ systemctl --user --quiet enable restricted-echo.socket
-$ systemctl --user --quiet enable podman-pause-process.service
+$ systemctl --user -q enable restricted-echo.socket
+$ systemctl --user -q enable podman-pause-process.service
 $ sudo reboot
 ```
 
