@@ -269,7 +269,7 @@ and its helper programs while a socket-activated container still can serve the i
 
 This could, for instance, improve security for a machine that is running a socket-activated web server container.
 In case Podman, conmon or the OCI runtime would be compromised due to
-a security vulnerabilitiy, the intruder would gain less privileges and therefore have less
+a security vulnerability, the intruder would gain less privileges and therefore have less
 possibilities to use the compromise as a starting point for attacks on other PCs.
 
 Note, using the systemd directive _RestrictAddressFamilies_ to restrict Podman is an advanced use of Podman.
