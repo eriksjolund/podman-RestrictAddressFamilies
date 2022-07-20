@@ -206,7 +206,7 @@ namespaces alive. When running a command such as `podman run`,
 Podman will first create the Podman pause process if it's missing. This is the case for
 rootless Podman. When running as root there is no need for a Podman pause process.
 
-Let's consider the situaition when systemd starts the systemd user services for
+Let's consider the situation when systemd starts the systemd user services for
 an unprivileged user directly after a reboot. If lingering has been enabled for the user
 (`loginctl enable-linger <username>`) and the user is not logged in, the first
 started Podman systemd user service will notice that the Podman pause process is missing
