@@ -44,7 +44,7 @@ Create the container
 
 ```
 $ podman pull -q ghcr.io/eriksjolund/socket-activate-echo
-$ podman create --rm --name restricted-echo --network none --pull=never ghcr.io/eriksjolund/socket-activate-echo
+$ podman create --rm --name restricted-echo --network none --sdnotify=conmon --pull=never ghcr.io/eriksjolund/socket-activate-echo
 ```
 
 Generate the systemd service unit
