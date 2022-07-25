@@ -76,7 +76,7 @@ the contents
 [Unit]
 Description=restricted echo server
 [Socket]
-ListenStream=127.0.0.1:9000
+ListenStream=127.0.0.1:9933
 
 [Install]
 WantedBy=default.target
@@ -129,7 +129,7 @@ $ systemctl --user start restricted-echo.socket
 Test the echo server with the program __socat__
 
 ```
-$ echo hello | socat - tcp4:127.0.0.1:9000
+$ echo hello | socat - tcp4:127.0.0.1:9933
 hello
 $
 ```
@@ -164,7 +164,7 @@ $ systemctl --user stop restricted-echo.service
 Test the echo server with the program __socat__
 
 ```
-$ echo hello | socat - tcp4:127.0.0.1:9000
+$ echo hello | socat - tcp4:127.0.0.1:9933
 $
 ```
 
@@ -255,7 +255,7 @@ $ sudo reboot
 After the reboot, test the echo server with the program __socat__
 
 ```
-$ echo hello | socat - tcp4:127.0.0.1:9000
+$ echo hello | socat - tcp4:127.0.0.1:9933
 hello
 $
 ```
