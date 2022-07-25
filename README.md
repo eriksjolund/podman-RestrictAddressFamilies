@@ -242,6 +242,12 @@ The service _podman-pause-process.service_ is a `Type=oneshot` service that exec
 command is normally used for other things, but a side effect of the command is that it creates the Podman pause
 process if it's missing.
 
+Enable lingering
+
+```
+$ loginctl enable-linger $USER
+```
+
 Enable the socket units and reboot
 
 ```
