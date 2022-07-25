@@ -8,7 +8,7 @@ The previous blog post _Use socket activation with Podman to get improved securi
 
 Requirements:
 * podman >= 3.4.0
-* runc >= 1.1.3 or crun (_main_ git branch)
+* runc >= 1.1.3 or crun >= 1.5
 * container-selinux >= 2.183.0 (if using SELinux)
 
 When using Podman in a systemd service, the __systemd__ directive
