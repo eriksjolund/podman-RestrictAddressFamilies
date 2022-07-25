@@ -232,10 +232,10 @@ Services using `RestrictAddressFamilies` or `NoNewPrivileges=yes` can
 be made to work by configuring them to start after a systemd user service that is responsible for
 creating the Podman pause process.
 
-For instance, the unit _echo-restrict.service_ depends on _podman-pause-process.service_:
+For instance, the unit _restricted-echo.service_ depends on _podman-pause-process.service_:
 
 ```           paus-process
-$ grep podman-pause-process.service ~/.config/systemd/user/echo-restrict.service
+$ grep podman-pause-process.service ~/.config/systemd/user/restricted-echo.service
 After=podman-pause-process.service
 BindTo=podman-pause-process.service
 ```
