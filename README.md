@@ -112,12 +112,6 @@ WantedBy=default.target
 
 ### Test the echo server
 
-After editing the unit files, systemd needs to reload its configuration
-
-```
-$ systemctl --user daemon-reload
-```
-
 Start the socket unit
 
 ```
