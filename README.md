@@ -82,22 +82,22 @@ WantedBy=sockets.target
 
 Add the two lines
 ```
-After=podman-pause-process.service
-BindTo=podman-pause-process.service
+After=podman-usernamespace.service
+BindTo=podman-usernamespace.service
 ```
 under the line `[Unit]` with the program __sed__ (or just use an editor)
 
 ```
 $ sed -i '/\[Unit\]/a \
-After=podman-pause-process.service\
-BindTo=podman-pause-process.service' ~/.config/systemd/user/restricted-echo.service
+After=podman-usernamespace.service\
+BindTo=podman-usernamespace.service' ~/.config/systemd/user/restricted-echo.service
 ```
 
-Create the file _~/.config/systemd/user/podman-pause-process.service_ with the contents
+Create the file _~/.config/systemd/user/podman-usernamespace.service_ with the contents
 
 ```
 [Unit]
-Description=podman-pause-process.service
+Description=podman-usernamespace.service
 
 [Service]
 Type=oneshot
@@ -224,15 +224,15 @@ Services using `RestrictAddressFamilies` or `NoNewPrivileges=yes` can
 be made to work by configuring them to start after a systemd user service that is responsible for
 creating the Podman pause process.
 
-For instance, the unit _restricted-echo.service_ depends on _podman-pause-process.service_:
+For instance, the unit _restricted-echo.service_ depends on _podman-usernamespace.service_:
 
 ```           paus-process
-$ grep podman-pause-process.service ~/.config/systemd/user/restricted-echo.service
-After=podman-pause-process.service
-BindTo=podman-pause-process.service
+$ grep podman-usernamespace.service ~/.config/systemd/user/restricted-echo.service
+After=podman-usernamespace.service
+BindTo=podman-usernamespace.service
 ```
 
-The service _podman-pause-process.service_ is a `Type=oneshot` service that executes `podman unshare /bin/true`. That
+The service _podman-usernamespace.service_ is a `Type=oneshot` service that executes `podman unshare /bin/true`. That
 command is normally used for other things, but a side effect of the command is that it creates the Podman pause
 process if it's missing.
 
