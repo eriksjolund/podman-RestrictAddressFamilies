@@ -77,7 +77,7 @@ Description=restricted echo server
 ListenStream=127.0.0.1:9933
 
 [Install]
-WantedBy=default.target
+WantedBy=sockets.target
 ```
 
 Add the two lines
