@@ -105,9 +105,6 @@ Restart=on-failure
 TimeoutStopSec=70
 ExecStart=/usr/bin/podman unshare /bin/true
 RemainAfterExit=yes
-
-[Install]
-WantedBy=default.target
 ```
 
 ### Test the echo server
@@ -242,11 +239,10 @@ Enable lingering
 $ loginctl enable-linger $USER
 ```
 
-Enable the socket units and reboot
+Enable the socket unit and reboot
 
 ```
 $ systemctl --user -q enable restricted-echo.socket
-$ systemctl --user -q enable podman-pause-process.service
 $ sudo reboot
 ```
 
